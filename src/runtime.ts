@@ -88,6 +88,23 @@ export interface RetractionWatchRuntimeOptions {
 
 const DOI_PATTERN = /^10\.\d{4,9}\/[^\s?#]+$/u
 
+/** Add the Crossref polite-pool contact to a request URL. */
+function withContact(url: string, mailto: string | undefined): string {
+  if (mailto === undefined) return url
+  return `${url}${url.includes('?') ? '&' : '?'}mailto=${encodeURIComponent(mailto)}`
+}
+
+/** Remove the polite-pool contact before a URL is cached or stored as evidence. */
+function withoutContact(url: string): string {
+  try {
+    const parsed = new URL(url)
+    parsed.searchParams.delete('mailto')
+    return parsed.toString()
+  } catch {
+    return url
+  }
+}
+
 /** Validate a DOI. */
 export function normalizeDoi(doi: string): string {
   const stripped = doi.trim().replace(/^https?:\/\/(?:dx\.)?doi\.org\//iu, '')
@@ -207,8 +224,9 @@ export class RetractionWatchRuntime {
     const cached = await this.#cacheGet(key, fresh)
     if (cached !== undefined) return cached
     const response = await this.#client.get(url, { accept: 'application/json' })
-    await this.#cachePut(key, response)
-    return response
+    // A transient 5xx must not be cached for a week; only answers are cached.
+    if (response.status < 400) await this.#cachePut(key, { ...response, url: withoutContact(response.url) })
+    return { ...response, url: withoutContact(response.url) }
   }
 
   /**
@@ -221,8 +239,11 @@ export class RetractionWatchRuntime {
     const normalized = normalizeDoi(doi)
     const previousStatus = (await this.lastStatuses()).get(normalized)
     const fresh = options.fresh === true
-    const workUrl = `https://api.crossref.org/works/${encodeURIComponent(normalized).replace(/%2F/gu, '/')}`
-    const updatesUrl = `https://api.crossref.org/works?filter=updates:${encodeURIComponent(normalized)}&rows=20&select=DOI,title,type,update-to,issued,URL`
+    const workUrl = withContact(`https://api.crossref.org/works/${encodeURIComponent(normalized).replace(/%2F/gu, '/')}`, this.config.mailto)
+    const updatesUrl = withContact(
+      `https://api.crossref.org/works?filter=updates:${encodeURIComponent(normalized)}&rows=20&select=DOI,title,type,update-to,issued,URL`,
+      this.config.mailto,
+    )
 
     let work: { status: number; body: string; url: string }
     try {
@@ -239,7 +260,7 @@ export class RetractionWatchRuntime {
           checks: checksOf({ doi: normalized, exists: false, status: 'unknown', notices: [], isNotice: false, networkError: error.message }),
           snapshots: [],
           warnings: [`the Crossref work lookup failed (${error.code}); status stays unknown`],
-          changed: previousStatus !== 'unknown',
+          changed: previousStatus !== undefined && previousStatus !== 'unknown',
           ...(previousStatus === undefined ? {} : { previousStatus }),
         }
       }
@@ -257,7 +278,7 @@ export class RetractionWatchRuntime {
         checks,
         snapshots: [],
         warnings: ['Crossref returned no record for this DOI; not_found is not evidence of fabrication and not evidence of cleanliness'],
-        changed: previousStatus !== 'unknown',
+        changed: previousStatus !== undefined && previousStatus !== 'unknown',
         ...(previousStatus === undefined ? {} : { previousStatus }),
       }
     }
@@ -290,6 +311,7 @@ export class RetractionWatchRuntime {
     try {
       const port = this.port()
       const snapshotIds: HashRef[] = []
+      const capturedAt: string[] = []
       for (const snapshot of snapshots) {
         const captured = await port.capture({
           bytes: snapshot.body,
@@ -298,15 +320,19 @@ export class RetractionWatchRuntime {
           capturedAt: this.iso(),
         })
         snapshotIds.push(captured.snapshot.snapshotId)
+        capturedAt.push(captured.snapshot.capturedAt)
       }
+      // The first snapshot's capture time is immutable, so re-checking the same
+      // Crossref answers dedupes instead of raising EVIDENCE_CONFLICT.
+      const retrievedAt = capturedAt[0]!
       const evidence = (
         await port.addEvidence({
-          evidenceId: stableId('ev', ['retraction-watch', normalized, ...snapshotIds]),
+          evidenceId: stableId('ev', ['retraction-watch', normalized, ...snapshotIds, status, ...checks.map(check => check.checkId)]),
           title: `Crossref retraction status for ${normalized}`,
-          sourceRef: { kind: 'doi', id: normalized, url: work.url, retrievedAt: this.iso(), metadata: { title: `Retraction status ${normalized}` } },
+          sourceRef: { kind: 'doi', id: normalized, url: work.url, retrievedAt, metadata: { title: `Retraction status ${normalized}` } },
           snapshotIds,
           anchors: [{ snapshotId: snapshotIds[0]!, kind: 'record', value: 'field:DOI' }],
-          provenance: { plugin: 'dsh-retraction-watch', version: VERSION, method: 'crossref:work+filter=updates', retrievedAt: this.iso() },
+          provenance: { plugin: 'dsh-retraction-watch', version: VERSION, method: 'crossref:work+filter=updates', retrievedAt },
           checks: [...checks],
           notes: `status=${status}; ${notices.length} notice(s)`,
         })
@@ -333,7 +359,7 @@ export class RetractionWatchRuntime {
       checks,
       snapshots,
       warnings,
-      changed: previousStatus !== status,
+      changed: previousStatus !== undefined && previousStatus !== status,
       ...(previousStatus === undefined ? {} : { previousStatus }),
       ...(evidenceId === undefined ? {} : { evidenceId }),
       ...(recordPath === undefined ? {} : { recordPath }),

@@ -2,7 +2,7 @@
   "name": "dsh-retraction-watch",
   "version": "0.1.0",
   "description": "Retraction and correction monitoring for DeepSeek Harness: Crossref work records plus the verified filter=updates query, per-DOI status (retracted/concern/corrected/notice/clear/unknown), an append-only timeline with change detection, REP v1 evidence snapshots and SARIF output. clear means no registered notice, never proof of validity.",
-  "author": "dsh-statcheck contributors",
+  "author": "dsh-retraction-watch contributors",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PerryLink/dsh-retraction-watch.git"

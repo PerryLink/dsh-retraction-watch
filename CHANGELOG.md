@@ -6,6 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Re-checking the same Crossref answers no longer fails with `STORE_ERROR`:
+  evidence identity includes the checks and retrieval times come from the
+  immutable snapshots, so unchanged answers dedupe.
+- The first observation of a DOI is no longer reported as `changed: true`:
+  `changed` now requires a recorded previous status that differs, matching the
+  tool description.
+- A transient update-query 5xx was cached for the full TTL and replayed as
+  `unknown`; only 2xx/3xx answers are cached now.
+- `mailto` was documented as the Crossref polite-pool contact but never sent.
+  It is now added to both Crossref requests and stripped from cached/stored
+  URLs so the address does not leak into evidence.
+- `package.json#author` said `dsh-statcheck contributors`.
+
 ## [0.1.0] - 2026-11-08
 
 First release: retraction and correction monitoring.
@@ -23,7 +38,7 @@ First release: retraction and correction monitoring.
   collapsed into `clear`; a failed update query is a `skipped` check.
 - Bounded HTTP client (allowlist, manual redirect re-validation, timeout,
   interval, retry) with an injectable fetch for offline tests.
-- 20 tests; manual sample table in the README.
+- 23 tests; manual sample table in the README.
 
 ### Notes
 

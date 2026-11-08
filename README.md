@@ -85,7 +85,7 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ## Evaluation
 
-**20 tests** across two files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI), timeline change detection across three runs, per-item batch isolation, batch cap, tool schemas/renderers, package contract.
+**23 tests** across three files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI, re-check without an evidence conflict, no caching of a transient 5xx, polite-pool contact kept out of stored evidence), timeline change detection across three runs (the first observation is not a change), per-item batch isolation, batch cap, tool schemas/renderers, package contract.
 
 Manual sample set (no benchmark is claimed for this plugin; its correctness is the Crossref contract, not a learned decision):
 
@@ -98,6 +98,7 @@ Manual sample set (no benchmark is claimed for this plugin; its correctness is t
 | DOI not in Crossref | `unknown`, `not_found` skipped | test |
 | update query 5xx | `unknown`, `network_error` skipped | test |
 | status changes between runs | `changed: true`, `previousStatus` | test |
+| first observation of a DOI | `changed: false`, no `previousStatus` | test |
 
 ## Known limitations (v0.1)
 

@@ -85,7 +85,7 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ## 评测
 
-**20 个测试 / 2 个文件**：更新类型映射、通知过滤、状态优先级、检查构造（clear / retracted / unknown / 网络失败）、运行时（撤稿、带缺口的 clear、404→unknown、更新查询失败→unknown、更正、非法 DOI）、三次运行之间的时间线变化检测、批量逐项失败隔离、批量上限、工具 schema/渲染、包契约。
+**23 个测试 / 3 个文件**：更新类型映射、通知过滤、状态优先级、检查构造（clear / retracted / unknown / 网络失败）、运行时（撤稿、带缺口的 clear、404→unknown、更新查询失败→unknown、更正、非法 DOI、重复核查不产生证据冲突、瞬时 5xx 不写缓存、polite pool 联系方式不落盘）、三次运行之间的时间线变化检测（首次观测不算变化）、批量逐项失败隔离、批量上限、工具 schema/渲染、包契约。
 
 人工样例集（本插件不声称 benchmark；其正确性来自 Crossref 契约，而不是学习出来的判定）：
 
@@ -98,6 +98,7 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 | DOI 不在 Crossref | `unknown`，`not_found` skipped | 测试 |
 | 更新查询 5xx | `unknown`，`network_error` skipped | 测试 |
 | 两次运行间状态变化 | `changed: true`、`previousStatus` | 测试 |
+| 首次观测某个 DOI | `changed: false`，无 `previousStatus` | 测试 |
 
 ## 已知限制（v0.1）
 

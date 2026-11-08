@@ -119,7 +119,9 @@ describe('watch and timeline', () => {
     })
     const first = await runtime(clear.client).watch([DOI])
     expect(first.items[0]?.status).toBe('clear')
-    expect(first.items[0]?.changed).toBe(true)
+    // The first observation has no previous status, so it is not a change.
+    expect(first.items[0]?.changed).toBe(false)
+    expect(first.items[0]?.previousStatus).toBeUndefined()
 
     const retracted = fakeClient({
       [`works/${DOI}`]: { status: 200, body: JSON.stringify({ message: { DOI } }) },
@@ -132,6 +134,56 @@ describe('watch and timeline', () => {
 
     const third = await runtime(retracted.client).watch([DOI])
     expect(third.items[0]?.changed).toBe(false)
+  })
+
+  it('re-checks the same Crossref answers without an evidence conflict', async () => {
+    const { client } = fakeClient({
+      [`works/${DOI}`]: { status: 200, body: JSON.stringify({ message: { DOI } }) },
+      'filter=updates': { status: 200, body: EMPTY_LIST },
+    })
+    const initial = await runtime(client).check(DOI)
+    const later = new RetractionWatchRuntime({
+      config: resolveConfig({ root, cacheTtlMs: 0 }),
+      client,
+      now: () => new Date('2026-07-02T09:00:00.000Z'),
+    })
+    const again = await later.check(DOI)
+    expect(again.status).toBe(initial.status)
+    expect(again.changed).toBe(false)
+    expect(again.evidenceId).toBe(initial.evidenceId)
+  })
+
+  it('does not cache a transient update-query failure', async () => {
+    let updateCalls = 0
+    const client: HttpClient = {
+      async get(url: string) {
+        if (url.includes('filter=updates')) {
+          updateCalls += 1
+          return updateCalls === 1 ? { status: 503, body: '', url } : { status: 200, body: EMPTY_LIST, url }
+        }
+        return { status: 200, body: JSON.stringify({ message: { DOI } }), url }
+      },
+    }
+    const rt = new RetractionWatchRuntime({ config: resolveConfig({ root, cacheTtlMs: 60_000, retries: 0 }), client, now: () => AT })
+    expect((await rt.check(DOI)).status).toBe('unknown')
+    expect((await rt.check(DOI)).status).toBe('clear')
+  })
+
+  it('sends the polite-pool contact but keeps it out of the stored evidence', async () => {
+    const scripted = fakeClient({
+      [`works/${DOI}`]: { status: 200, body: JSON.stringify({ message: { DOI } }) },
+      'filter=updates': { status: 200, body: EMPTY_LIST },
+    })
+    const rt = new RetractionWatchRuntime({
+      config: resolveConfig({ root, cacheTtlMs: 0, mailto: 'ops@example.org' }),
+      client: scripted.client,
+      now: () => AT,
+    })
+    const result = await rt.check(DOI)
+    expect(scripted.calls.every(url => url.includes('mailto=ops%40example.org'))).toBe(true)
+    const record = await readFile(result.recordPath!, 'utf8')
+    expect(record).not.toContain('ops@example.org')
+    expect(record).not.toContain('ops%40example.org')
   })
 
   it('keeps per-item failures local and reports unknown', async () => {
