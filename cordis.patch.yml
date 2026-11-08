@@ -1,0 +1,19 @@
+# dsh-retraction-watch bundle patch: mount the retraction/correction tools.
+#
+# Every key below is a Config field (Schemastery schema); invalid values fail the
+# profile load loudly. Only Crossref is contacted, over HTTPS, with an explicit
+# timeout and per-host interval.
+- insert:
+    - id: dsh-retraction-watch
+      name: dsh-retraction-watch
+      config:
+        enabled: true
+        root: .retraction-watch
+        userAgent: dsh-retraction-watch/0.1.0 (https://github.com/PerryLink/dsh-retraction-watch)
+        timeoutMs: 15000
+        minIntervalMs: 150
+        retries: 1
+        maxRedirects: 3
+        cacheTtlMs: 604800000
+        maxBatch: 50
+        batchConcurrency: 3
