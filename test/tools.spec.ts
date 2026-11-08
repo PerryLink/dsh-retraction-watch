@@ -95,7 +95,7 @@ describe('package', () => {
   it('VERSION matches package.json and the manifest is a bundle patch', async () => {
     const pkg = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../package.json', import.meta.url), 'utf8')) as Record<string, unknown>
     expect(pkg['version']).toBe(VERSION)
-    expect(pkg['author']).toBe('dsh-retraction-watch contributors')
+    expect(pkg['author']).toBe('PerryLink contributors')
     expect(pkg['dsh']).toEqual({ manifestVersion: 1, bundle: { patch: './cordis.patch.yml' } })
     expect((pkg['dependencies'] as Record<string, unknown>)).toEqual({})
   })
