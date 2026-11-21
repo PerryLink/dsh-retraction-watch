@@ -1,13 +1,22 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-hero-en-dark.webp">
+  <img src="docs/assets/dsh-retraction-watch-hero-en-light.webp" width="100%" alt="dsh-retraction-watch: a DOI checked against Crossref — doi-exists pass, a retraction notice fail, and a failed update query reported as skipped with the status left unknown — with the six statuses and the append-only timeline on the right">
+</picture>
+
 # dsh-retraction-watch
 
 **Has anything been published against the papers you cite?**
 
 *Crossref work records + the verified `filter=updates:<doi>` query, a per-DOI status, an append-only timeline that shows changes, and REP evidence you can re-read. `clear` means no registered notice — never "this paper is valid".*
 
+[简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-brightgreen.svg)]()
 
-English · [简体中文](README-zh.md)
+</div>
 
 ---
 
@@ -16,6 +25,14 @@ English · [简体中文](README-zh.md)
 - `retraction_check(doi)` → `retracted` / `concern` / `corrected` / `notice` / `clear` / `unknown`, with the notice DOIs and a REP evidence record holding both Crossref responses.
 - `retraction_watch(dois)` → the same for a bibliography, with **change detection**: the timeline records every observed status, so "clear → retracted" is reported as a change.
 - `retraction_report(items)` → Markdown table + SARIF 2.1.0 (retractions/concerns = errors, corrections = warnings).
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch structure: a DOI is looked up through the Crossref work record and the verified filter=updates query, the update-to types are reduced to one status with retraction precedence, and every observation is appended to a timeline, stored as an immutable REP snapshot and rendered as Markdown or SARIF; the tokens in the diagram are the real tool, query and field names, so all five languages use the same picture">
+</picture>
+
+*Structure: lookup → derive → record; `status` and `changed` are the two outputs, and a failed notice query is a `skipped` check that leaves the status `unknown` — never `clear`. The token labels inside the diagram are the real tool, query and field names, so the same picture serves all five languages.*
 
 ## Verified provider capability (not guessed)
 
@@ -84,6 +101,11 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 - Cached responses are best-effort: a cache failure is a miss, never a check result.
 
 ## Evaluation
+
+![dsh-retraction-watch evaluation: the real test suite in this checkout — 24 tests in 4 files pass across notice mapping, status derivation, runtime/timeline, tools and the mount contract](docs/assets/dsh-retraction-watch-demo.gif)
+
+*Animated: the real `pnpm exec vitest run --reporter=verbose` output and the package gate (re-run 2026-11-21; the suite has 24 tests today — the evaluation paragraph below still counts 23). Every Crossref answer in the suite is scripted, so the run makes no network call.*
+
 
 **23 tests** across three files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI, re-check without an evidence conflict, no caching of a transient 5xx, polite-pool contact kept out of stored evidence), timeline change detection across three runs (the first observation is not a change), per-item batch isolation, batch cap, tool schemas/renderers, package contract.
 

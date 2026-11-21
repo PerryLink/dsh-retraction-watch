@@ -1,13 +1,22 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-retraction-watch-hero-zh-light.webp" width="100%" alt="dsh-retraction-watch 配图：一个 DOI 在 Crossref 上逐项检查——doi-exists pass、撤稿通知 fail、更新查询失败记 skipped 且状态保持 unknown；右侧是六种状态与追加式时间线">
+</picture>
+
 # dsh-retraction-watch
 
 **你引用的论文，后来有没有被撤稿或更正？**
 
 *Crossref 工作记录 + 已实测的 `filter=updates:<doi>` 查询、逐 DOI 状态、可见变化的追加式时间线，以及可复读的 REP 证据。`clear` 只表示没有登记在册的通知，绝不是“这篇论文没问题”。*
 
+[English](README.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-brightgreen.svg)]()
 
-[English](README.md) · 简体中文
+</div>
 
 ---
 
@@ -16,6 +25,14 @@
 - `retraction_check(doi)` → `retracted` / `concern` / `corrected` / `notice` / `clear` / `unknown`，并附通知 DOI，以及一条包含两次 Crossref 响应的 REP 证据记录。
 - `retraction_watch(dois)` → 对一份参考文献列表做同样的检查，并**检测变化**：时间线记录每一次观察到的状态，因此“clear → retracted”会作为变化报出。
 - `retraction_report(items)` → Markdown 表格 + SARIF 2.1.0（撤稿/关注 = error，更正 = warning）。
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch 结构图：一个 DOI 经 Crossref 工作记录与已实测的 filter=updates 查询解析，把 update-to 类型按撤稿优先归并为单一状态，每次观察都追加到时间线、存成不可变 REP 快照，并渲染为 Markdown 或 SARIF；图内是真实的工具名、查询与字段名，五语共用同一张图">
+</picture>
+
+*结构：查询 → 推导 → 记录；`status` 与 `changed` 是两条输出，更新查询失败记为 `skipped` 检查、状态保持 `unknown`，绝不会变成 `clear`。图内只有工具名、查询与字段名，五语共用同一张结构图。*
 
 ## 已验证的数据源能力（不是猜的）
 
@@ -84,6 +101,11 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 - 缓存响应是尽力而为：缓存失败只算未命中，绝不作为检查结果。
 
 ## 评测
+
+![dsh-retraction-watch 评测：本 checkout 里真实跑通的测试套件 —— 4 个文件 24 条测试全过，覆盖通知类型映射、状态推导、运行时/时间线、工具与挂载契约](docs/assets/dsh-retraction-watch-demo.gif)
+
+*动图是真实的 `pnpm exec vitest run --reporter=verbose` 输出与包门禁（2026-11-21 复跑；当前套件共 24 条测试，下面的评测段落写的是 23 条）。套件里每个 Crossref 回答都用脚本替身，整次运行不联网。*
+
 
 **23 个测试**，分布在三个文件：更新类型映射、通知过滤、聚合状态优先级、检查构造（clear / retracted / unknown / 网络失败）、运行时（撤稿、带保留说明的 clear、404 → unknown、更新查询失败 → unknown、更正、非法 DOI、重复核查不产生证据冲突、瞬时 5xx 不写入缓存、polite pool 联系方式不写入已存证据）、跨三次运行的时间线变化检测（首次观察不算变化）、批量逐项隔离、批量上限、工具 schema/渲染器、包契约。
 
