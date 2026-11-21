@@ -104,10 +104,10 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ![dsh-retraction-watch evaluation: the real test suite in this checkout — 24 tests in 4 files pass across notice mapping, status derivation, runtime/timeline, tools and the mount contract](docs/assets/dsh-retraction-watch-demo.gif)
 
-*Animated: the real `pnpm exec vitest run --reporter=verbose` output and the package gate (re-run 2026-11-21; the suite has 24 tests today — the evaluation paragraph below still counts 23). Every Crossref answer in the suite is scripted, so the run makes no network call.*
+*Animated: the real `pnpm exec vitest run --reporter=verbose` output and the package gate (re-run 2026-11-21; the suite has 24 tests today — the evaluation paragraph below still counts 24). Every Crossref answer in the suite is scripted, so the run makes no network call.*
 
 
-**23 tests** across three files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI, re-check without an evidence conflict, no caching of a transient 5xx, polite-pool contact kept out of stored evidence), timeline change detection across three runs (the first observation is not a change), per-item batch isolation, batch cap, tool schemas/renderers, package contract.
+**24 tests** across four files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI, re-check without an evidence conflict, no caching of a transient 5xx, polite-pool contact kept out of stored evidence), timeline change detection across three runs (the first observation is not a change), per-item batch isolation, batch cap, tool schemas/renderers, package contract.
 
 Manual sample set (no benchmark is claimed for this plugin; its correctness is the Crossref contract, not a learned decision):
 

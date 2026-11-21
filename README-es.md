@@ -104,10 +104,10 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ![dsh-retraction-watch evaluación: la suite de pruebas real de este checkout — 24 pruebas en 4 archivos pasan en mapeo de avisos, derivación de estado, runtime/línea de tiempo, herramientas y contrato de montaje](docs/assets/dsh-retraction-watch-demo.gif)
 
-*Animado: la salida real de `pnpm exec vitest run --reporter=verbose` y la puerta del paquete (reejecutado el 2026-11-21; hoy la suite tiene 24 pruebas — el párrafo de evaluación de abajo sigue contando 23). Cada respuesta de Crossref de la suite está guionizada, así que la ejecución no hace ninguna llamada de red.*
+*Animado: la salida real de `pnpm exec vitest run --reporter=verbose` y la puerta del paquete (reejecutado el 2026-11-21; hoy la suite tiene 24 pruebas — el párrafo de evaluación de abajo sigue contando 24). Cada respuesta de Crossref de la suite está guionizada, así que la ejecución no hace ninguna llamada de red.*
 
 
-**23 pruebas** en tres archivos: mapeo de tipos de actualización, filtrado de avisos, precedencia del estado agregado, construcción de comprobaciones (clear / retracted / unknown / fallo de red), runtime (retractación, clear con advertencia, 404 → unknown, consulta de actualizaciones fallida → unknown, corrección, DOI inválido, re-comprobación sin conflicto de evidencia, sin caché de un 5xx transitorio, contacto del polite pool fuera de la evidencia guardada), detección de cambios en la línea de tiempo a lo largo de tres ejecuciones (la primera observación no es un cambio), aislamiento por elemento en el lote, límite del lote, esquemas/renderizadores de herramientas, contrato del paquete.
+**24 pruebas** en cuatro archivos: mapeo de tipos de actualización, filtrado de avisos, precedencia del estado agregado, construcción de comprobaciones (clear / retracted / unknown / fallo de red), runtime (retractación, clear con advertencia, 404 → unknown, consulta de actualizaciones fallida → unknown, corrección, DOI inválido, re-comprobación sin conflicto de evidencia, sin caché de un 5xx transitorio, contacto del polite pool fuera de la evidencia guardada), detección de cambios en la línea de tiempo a lo largo de tres ejecuciones (la primera observación no es un cambio), aislamiento por elemento en el lote, límite del lote, esquemas/renderizadores de herramientas, contrato del paquete.
 
 Conjunto de muestras manual (no se declara ningún benchmark para este plugin; su corrección es el contrato de Crossref, no una decisión aprendida):
 
