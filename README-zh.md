@@ -104,7 +104,7 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ![dsh-retraction-watch 评测：本 checkout 里真实跑通的测试套件 —— 4 个文件 24 条测试全过，覆盖通知类型映射、状态推导、运行时/时间线、工具与挂载契约](docs/assets/dsh-retraction-watch-demo.gif)
 
-*动图是真实的 `pnpm exec vitest run --reporter=verbose` 输出与包门禁（2026-11-21 复跑；当前套件共 24 条测试，下面的评测段落写的是 24 条）。套件里每个 Crossref 回答都用脚本替身，整次运行不联网。*
+*动图是真实的 `pnpm exec vitest run --reporter=verbose` 输出与包门禁（2026-11-21 复跑；当前套件共 24 条测试）。套件里每个 Crossref 回答都用脚本替身，整次运行不联网。*
 
 
 **24 个测试**，分布在四个文件：更新类型映射、通知过滤、聚合状态优先级、检查构造（clear / retracted / unknown / 网络失败）、运行时（撤稿、带保留说明的 clear、404 → unknown、更新查询失败 → unknown、更正、非法 DOI、重复核查不产生证据冲突、瞬时 5xx 不写入缓存、polite pool 联系方式不写入已存证据）、跨三次运行的时间线变化检测（首次观察不算变化）、批量逐项隔离、批量上限、工具 schema/渲染器、包契约。

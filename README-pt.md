@@ -104,7 +104,7 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 
 ![dsh-retraction-watch avaliação: a suíte de testes real deste checkout — 24 testes em 4 arquivos passam em mapeamento de avisos, derivação de estado, runtime/linha do tempo, ferramentas e contrato de montagem](docs/assets/dsh-retraction-watch-demo.gif)
 
-*Animado: a saída real de `pnpm exec vitest run --reporter=verbose` e o portão do pacote (reexecutado em 2026-11-21; hoje a suíte tem 24 testes — o parágrafo de avaliação abaixo ainda conta 24). Cada resposta do Crossref na suíte é roteirizada, então a execução não faz nenhuma chamada de rede.*
+*Animado: a saída real de `pnpm exec vitest run --reporter=verbose` e o portão do pacote (reexecutado em 2026-11-21; hoje a suíte tem 24 testes). Cada resposta do Crossref na suíte é roteirizada, então a execução não faz nenhuma chamada de rede.*
 
 
 **24 testes** em quatro arquivos: mapeamento de tipos de atualização, filtragem de avisos, precedência do estado agregado, construção de verificações (clear / retracted / unknown / falha de rede), runtime (retratação, clear com ressalva, 404 → unknown, consulta de atualizações falha → unknown, correção, DOI inválido, reverificação sem conflito de evidência, sem cache de um 5xx transitório, contato do polite pool fora da evidência guardada), detecção de mudanças na linha do tempo ao longo de três execuções (a primeira observação não é mudança), isolamento por item no lote, limite do lote, esquemas/renderizadores de ferramentas, contrato do pacote.
