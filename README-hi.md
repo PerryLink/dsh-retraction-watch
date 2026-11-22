@@ -26,7 +26,6 @@
 - `retraction_watch(dois)` → किसी बिब्लियोग्राफ़ी के लिए वही, **बदलाव का पता लगाने** के साथ: टाइमलाइन हर देखे गए स्टेटस को दर्ज करती है, इसलिए "clear → retracted" बदलाव के रूप में रिपोर्ट होता है।
 - `retraction_report(items)` → Markdown टेबल + SARIF 2.1.0 (retractions/concerns = errors, corrections = warnings)।
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
   <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch संरचना: एक DOI को Crossref वर्क रिकॉर्ड और सत्यापित filter=updates क्वेरी से देखा जाता है, update-to प्रकार रिट्रैक्शन प्राथमिकता के साथ एक ही स्टेटस में बदलते हैं, और हर अवलोकन टाइमलाइन में जुड़ता है, अपरिवर्तनीय REP स्नैपशॉट के रूप में सहेजा जाता है और Markdown या SARIF में बनता है; आरेख के लेबल असली टूल, क्वेरी और फ़ील्ड नाम हैं, इसलिए पाँचों भाषाएँ एक ही चित्र इस्तेमाल करती हैं">
@@ -69,7 +68,7 @@
 
 | | |
 |---|---|
-| DeepSeek Harness | **`dsh-v0.2.2-rc.4`** (2026-11-18 को सत्यापित); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| DeepSeek Harness | **`dsh-v0.2.3-alpha.1`** (2026-11-22 को सत्यापित); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
 | Node | `^22.19.0 \|\| >=24.9.0` (`24.22.1` पर टेस्टेड), केवल ESM |
 | पीयर्स | `@perrylink/dsh-research-core ^0.1.0`, `@deepseek-ai/cordis ^4.0.5-alpha.1`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/schemastery ^3.18.5-alpha.1` |
 | रनटाइम डिपेंडेंसी | **शून्य** |
@@ -105,7 +104,6 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 ![dsh-retraction-watch मूल्यांकन: इस checkout की असली टेस्ट सूट — 4 फ़ाइलों में 24 टेस्ट पास, जो नोटिस मैपिंग, स्टेटस डिरिवेशन, रनटाइम/टाइमलाइन, टूल्स और माउंट कॉन्ट्रैक्ट को कवर करते हैं](docs/assets/dsh-retraction-watch-demo.gif)
 
 *एनिमेटेड: असली `pnpm exec vitest run --reporter=verbose` आउटपुट और पैकेज गेट (2026-11-21 को दोबारा चलाया गया; आज सूट में 24 टेस्ट हैं)। सूट में हर Crossref जवाब स्क्रिप्ट किया हुआ है, इसलिए यह रन कोई नेटवर्क कॉल नहीं करता।*
-
 
 **24 टेस्ट** चार फ़ाइलों में: अपडेट-टाइप मैपिंग, नोटिस फ़िल्टरिंग, समग्र स्टेटस की प्राथमिकता, जाँचों का निर्माण (clear / retracted / unknown / नेटवर्क विफलता), रनटाइम (रिट्रैक्शन, चेतावनी के साथ clear, 404 → unknown, अपडेट क्वेरी विफल → unknown, करेक्शन, अमान्य DOI, एविडेंस कॉन्फ़्लिक्ट के बिना दोबारा जाँच, क्षणिक 5xx का कैश न होना, polite-pool संपर्क सहेजे एविडेंस से बाहर), तीन रनों में टाइमलाइन बदलाव का पता लगाना (पहला अवलोकन बदलाव नहीं है), प्रति-आइटम बैच अलगाव, बैच सीमा, टूल स्कीमा/रेंडरर, पैकेज कॉन्ट्रैक्ट।
 

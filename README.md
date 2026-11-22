@@ -26,7 +26,6 @@
 - `retraction_watch(dois)` → the same for a bibliography, with **change detection**: the timeline records every observed status, so "clear → retracted" is reported as a change.
 - `retraction_report(items)` → Markdown table + SARIF 2.1.0 (retractions/concerns = errors, corrections = warnings).
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
   <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch structure: a DOI is looked up through the Crossref work record and the verified filter=updates query, the update-to types are reduced to one status with retraction precedence, and every observation is appended to a timeline, stored as an immutable REP snapshot and rendered as Markdown or SARIF; the tokens in the diagram are the real tool, query and field names, so all five languages use the same picture">
@@ -69,7 +68,7 @@ The plugin only uses the two working queries. When the update query fails it rep
 
 | | |
 |---|---|
-| DeepSeek Harness | **`dsh-v0.2.2-rc.4`** (verified 2026-11-18); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| DeepSeek Harness | **`dsh-v0.2.3-alpha.1`** (verified 2026-11-22); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
 | Node | `^22.19.0 \|\| >=24.9.0` (tested `24.22.1`), ESM only |
 | Peers | `@perrylink/dsh-research-core ^0.1.0`, `@deepseek-ai/cordis ^4.0.5-alpha.1`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/schemastery ^3.18.5-alpha.1` |
 | Runtime dependencies | **zero** |
@@ -105,7 +104,6 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 ![dsh-retraction-watch evaluation: the real test suite in this checkout — 24 tests in 4 files pass across notice mapping, status derivation, runtime/timeline, tools and the mount contract](docs/assets/dsh-retraction-watch-demo.gif)
 
 *Animated: the real `pnpm exec vitest run --reporter=verbose` output and the package gate (re-run 2026-11-21; the suite has 24 tests today). Every Crossref answer in the suite is scripted, so the run makes no network call.*
-
 
 **24 tests** across four files: update-type mapping, notice filtering, aggregate status precedence, check construction (clear / retracted / unknown / network failure), runtime (retraction, clear with caveat, 404 → unknown, failed update query → unknown, correction, invalid DOI, re-check without an evidence conflict, no caching of a transient 5xx, polite-pool contact kept out of stored evidence), timeline change detection across three runs (the first observation is not a change), per-item batch isolation, batch cap, tool schemas/renderers, package contract.
 

@@ -26,7 +26,6 @@
 - `retraction_watch(dois)` → 对一份参考文献列表做同样的检查，并**检测变化**：时间线记录每一次观察到的状态，因此“clear → retracted”会作为变化报出。
 - `retraction_report(items)` → Markdown 表格 + SARIF 2.1.0（撤稿/关注 = error，更正 = warning）。
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
   <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch 结构图：一个 DOI 经 Crossref 工作记录与已实测的 filter=updates 查询解析，把 update-to 类型按撤稿优先归并为单一状态，每次观察都追加到时间线、存成不可变 REP 快照，并渲染为 Markdown 或 SARIF；图内是真实的工具名、查询与字段名，五语共用同一张图">
@@ -69,7 +68,7 @@
 
 | | |
 |---|---|
-| DeepSeek Harness | **`dsh-v0.2.2-rc.4`**（2026-11-18 实测）；peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| DeepSeek Harness | **`dsh-v0.2.3-alpha.1`**（2026-11-22 实测）；peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
 | Node | `^22.19.0 \|\| >=24.9.0`（实测 `24.22.1`），仅 ESM |
 | Peer 依赖 | `@perrylink/dsh-research-core ^0.1.0`、`@deepseek-ai/cordis ^4.0.5-alpha.1`、`@deepseek-ai/dsh-tools`、`@deepseek-ai/schemastery ^3.18.5-alpha.1` |
 | 运行时依赖 | **零** |
@@ -105,7 +104,6 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 ![dsh-retraction-watch 评测：本 checkout 里真实跑通的测试套件 —— 4 个文件 24 条测试全过，覆盖通知类型映射、状态推导、运行时/时间线、工具与挂载契约](docs/assets/dsh-retraction-watch-demo.gif)
 
 *动图是真实的 `pnpm exec vitest run --reporter=verbose` 输出与包门禁（2026-11-21 复跑；当前套件共 24 条测试）。套件里每个 Crossref 回答都用脚本替身，整次运行不联网。*
-
 
 **24 个测试**，分布在四个文件：更新类型映射、通知过滤、聚合状态优先级、检查构造（clear / retracted / unknown / 网络失败）、运行时（撤稿、带保留说明的 clear、404 → unknown、更新查询失败 → unknown、更正、非法 DOI、重复核查不产生证据冲突、瞬时 5xx 不写入缓存、polite pool 联系方式不写入已存证据）、跨三次运行的时间线变化检测（首次观察不算变化）、批量逐项隔离、批量上限、工具 schema/渲染器、包契约。
 

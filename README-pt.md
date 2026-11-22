@@ -26,7 +26,6 @@
 - `retraction_watch(dois)` → o mesmo para uma bibliografia, com **detecção de mudanças**: a linha do tempo registra cada estado observado, então "clear → retracted" é reportado como mudança.
 - `retraction_report(items)` → tabela Markdown + SARIF 2.1.0 (retratações/concerns = erros, correções = avisos).
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-retraction-watch-flow-v5-dark.svg">
   <img src="docs/assets/dsh-retraction-watch-flow-v5-light.svg" width="100%" alt="dsh-retraction-watch estrutura: um DOI é consultado pelo registro de trabalho do Crossref e pela consulta verificada filter=updates, os tipos update-to são reduzidos a um único estado com precedência de retratação, e cada observação é anexada a uma linha do tempo, guardada como instantâneo REP imutável e renderizada como Markdown ou SARIF; os rótulos do diagrama são os nomes reais de ferramentas, consultas e campos, então os cinco idiomas usam a mesma imagem">
@@ -69,7 +68,7 @@ O plugin usa apenas as duas consultas que funcionam. Quando a consulta de atuali
 
 | | |
 |---|---|
-| DeepSeek Harness | **`dsh-v0.2.2-rc.4`** (verificado em 2026-11-18); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| DeepSeek Harness | **`dsh-v0.2.3-alpha.1`** (verificado em 2026-11-22); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
 | Node | `^22.19.0 \|\| >=24.9.0` (testado em `24.22.1`), somente ESM |
 | Pares | `@perrylink/dsh-research-core ^0.1.0`, `@deepseek-ai/cordis ^4.0.5-alpha.1`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/schemastery ^3.18.5-alpha.1` |
 | Dependências de execução | **zero** |
@@ -105,7 +104,6 @@ dsh --profile <name> --dump-config | grep dsh-retraction-watch
 ![dsh-retraction-watch avaliação: a suíte de testes real deste checkout — 24 testes em 4 arquivos passam em mapeamento de avisos, derivação de estado, runtime/linha do tempo, ferramentas e contrato de montagem](docs/assets/dsh-retraction-watch-demo.gif)
 
 *Animado: a saída real de `pnpm exec vitest run --reporter=verbose` e o portão do pacote (reexecutado em 2026-11-21; hoje a suíte tem 24 testes). Cada resposta do Crossref na suíte é roteirizada, então a execução não faz nenhuma chamada de rede.*
-
 
 **24 testes** em quatro arquivos: mapeamento de tipos de atualização, filtragem de avisos, precedência do estado agregado, construção de verificações (clear / retracted / unknown / falha de rede), runtime (retratação, clear com ressalva, 404 → unknown, consulta de atualizações falha → unknown, correção, DOI inválido, reverificação sem conflito de evidência, sem cache de um 5xx transitório, contato do polite pool fora da evidência guardada), detecção de mudanças na linha do tempo ao longo de três execuções (a primeira observação não é mudança), isolamento por item no lote, limite do lote, esquemas/renderizadores de ferramentas, contrato do pacote.
 
