@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "撤稿与更正监测",
+    "description": "你引用的论文，后来有没有被撤稿或更正？Crossref 工作记录 + 已实测的 filter=updates:<doi> 查询、逐 DOI 状态、追加式时间线与 REP 证据。"
+  }
+}

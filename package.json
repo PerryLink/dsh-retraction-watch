@@ -1,6 +1,6 @@
 {
   "name": "dsh-retraction-watch",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Retraction and correction monitoring for DeepSeek Harness: Crossref work records plus the verified filter=updates query, per-DOI status (retracted/concern/corrected/notice/clear/unknown), an append-only timeline with change detection, REP v1 evidence snapshots and SARIF output. clear means no registered notice, never proof of validity.",
   "author": "PerryLink contributors",
   "repository": {
@@ -20,7 +20,8 @@
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
     "lib",
@@ -32,7 +33,9 @@
     "LICENSE",
     "SECURITY.md",
     "docs/assets/*",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "locale/*.json",
+    "icon.png"
   ],
   "sideEffects": false,
   "dsh": {
@@ -81,5 +84,6 @@
     "test:watch": "vitest",
     "verify:package": "node scripts/verify-package.mjs"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "icon": "icon.png"
 }

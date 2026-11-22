@@ -7,6 +7,8 @@
 
 # dsh-retraction-watch
 
+当前版本 `0.1.4`。
+
 **Has anything been published against the papers you cite?**
 
 *Crossref work records + the verified `filter=updates:<doi>` query, a per-DOI status, an append-only timeline that shows changes, and REP evidence you can re-read. `clear` means no registered notice — never "this paper is valid".*
